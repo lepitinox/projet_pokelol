@@ -51,7 +51,7 @@ def txt_parser(bytes_list: list[bytes]):
 
     return ret
 
-def save_to_json(data: dict, path: Union[str, Path])
+def save_to_json(data: dict, path: Union[str, Path]):
     """
     save data (dict) to a json file at path.
     
