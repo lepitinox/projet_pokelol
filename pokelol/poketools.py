@@ -26,7 +26,7 @@ def txt_openner(file_path) -> list[bytes]:
     return data
 
 
-def txt_parser(bytes_list: list[bytes]):
+def txt_parser(bytes_list: list[bytes]) -> dict:
     """
     cast bytes to string and transform into dict, consider that text in encoded in uft8
     Parameters
@@ -51,7 +51,7 @@ def txt_parser(bytes_list: list[bytes]):
 
     return ret
 
-def save_to_json(data: dict, path: Union[str, Path])
+def save_to_json(data: dict, path: Union[str, Path]):
     """
     save data (dict) to a json file at path.
     
