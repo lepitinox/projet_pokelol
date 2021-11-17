@@ -1,12 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from pokelol.poketools import txt_openner
+from pokelol.poketools import txt_parser
 from env_loader import POKEMON_PATH
 
 
 class Pokemon:
-    poke_list = txt_openner(POKEMON_PATH)
+    poke_list = txt_parser(POKEMON_PATH)
 
     def __init__(self):
         self.name = None
