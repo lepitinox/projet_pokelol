@@ -8,3 +8,4 @@ class Dresseur:
         self.pokelist = None
         self.deck = None
 
+
