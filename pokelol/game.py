@@ -136,6 +136,7 @@ class Game :
 
         # Display deck of player1
         print("Les pokemons du", p1.name, ":")
+        # TODO: create deck.to_string
         p1.deck.to_string()
 
         # Choosing the current pokemon for player one
@@ -143,6 +144,7 @@ class Game :
         choice = m_in.choose_integer(0, 2)
 
         # poke1 is player 1 currently chosen pokemon
+        # TODO: create deck.current_pokemon variable
         p1.deck.current_pokemon = p1.deck[choice]
 
         # ========================================== #
@@ -178,10 +180,11 @@ class Game :
             print("C'est a", p1.name,"de jouer!")
 
             #Display all current pokemon attribues
+            # TODO: create pokemon.to_string()
             p1.deck.current_pokemon.to_string()
 
             # TODO: combat choices for player1 and 2
-            self.player_combat_choice(p1,p2)
+            self.player_combat_choice(p1, p2)
 
             # ============================= #
             # ===== Player two's turn ===== #
@@ -196,7 +199,6 @@ class Game :
                 # Display all current pokemon attribues
                 p2.deck.current_pokemon.to_string()
 
-                # TODO: combat choices for player1 and 2
                 self.player_combat_choice(p2, p1)
 
                 turn += 1
