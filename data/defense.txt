@@ -1,0 +1,9 @@
+Nom	Description	Element	Soin	Energie	Cout
+Atterrissage	Le lanceur atterrit et se repose. Restaure jusqu'à la moitie de ses PV max.	Air	20-50		10
+Pile Duracell	Des piles qui durent longtemps, vraiment longtemps.	Air		30-60	0
+Anneau Hydro	Un voile d'eau recouvre le lanceur et regenere ses PV.	Eau	30-50		20
+Fontaine de Vie	Le lanceur projette une eau mysterieuse autour du terrain pour restaurer ses PV.	Eau	10-30		10
+Aurore	Un soin qui restaure des PV au lanceur.	Feu	5-25		5
+Sang chaud	Le lanceur lezarde au Soleil et recupere jusqu'à la moitie de ses PV max.	Feu	10-50		10
+Photo-Synthese	Le lanceur convertit la lumiere en energie.	Terre		30-60	0
+Racines	Le lanceur plante ses racines et recupere des PV.	Terre	30-50		20

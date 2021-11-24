@@ -1,0 +1,47 @@
+Nom	Description	Element	Puissance	Precision	Cout
+Bec Vrille	Une attaque utilisant le bec comme une perceuse.	Air	80	80	15
+Cage Eclair	Un faible choc electrique frappe l'ennemi.	Air	40	70	15
+Cru-Ailes	L'ennemi est frappe par de larges ailes deployees pour infliger des degats.	Air	60	80	25
+Eclair	Une decharge electrique tombe sur l'ennemi.	Air	40	80	20
+Fatal-Foudre	La foudre tombe sur l'ennemi pour lui infliger des degats.	Air	110	50	5
+Picpic	Frappe l'ennemi d'un bec pointu ou d'une corne pour infliger des degats.	Air	35	80	25
+Pique	Une attaque en deux tours au taux de critiques eleve.	Air	140	70	5
+Poing eclair	Un coup de poing electrique vient frapper l'ennemi.	Air	75	80	10
+Tonnerre	Une grosse decharge electrique tombe sur l'ennemi.	Air	90	80	10
+Tornade	Le lanceur bat des ailes pour generer une bourrasque qui blesse l'ennemi.	Air	40	80	25
+Vol	Le lanceur s'envole et frappe l'ennemi.	Air	90	75	10
+Blizzard	Une violente tempete de neige s'abat sur l'ennemi.	Eau	110	50	5
+Bulles d'O	Des bulles sont envoyees avec puissance sur l'ennemi.	Eau	65	80	20
+Cascade	Le lanceur charge l'ennemi a une vitesse remarquable.	Eau	80	80	15
+Claquoir	Piege et l'ecrase l'ennemi.	Eau	35	65	15
+Ecume	Une attaque de bulles frappe l'ennemi.	Eau	40	80	30
+Hydrocanon	Un puissant jet d'eau est dirige sur l'ennemi.	Eau	110	60	5
+Laser Glace	Un rayon de glace frappe l'ennemi.	Eau	90	80	10
+Onde Boreale	Envoie un rayon arc-en-ciel sur l'ennemi.	Eau	65	80	20
+Pince-Masse	Une grande pince martele l'ennemi.	Eau	100	70	10
+Pistolet a O	De l'eau est projetee avec force sur l'ennemi.	Eau	40	80	25
+Poing Glace	Un coup de poing glace vient frapper l'ennemi.	Eau	75	80	15
+Surf	Une enorme vague s'abat sur le champ de bataille et inflige des degats.	Eau	90	80	15
+Deflagration	Un deluge de flammes ardentes submerge l'ennemi.	Feu	100	65	5
+Flammeche	L'ennemi est attaque par une faible flamme.	Feu	40	80	25
+Lance-Flammes	L'ennemi reçoit un torrent de flammes.	Feu	125	70	20
+Poing Feu	Un coup de poing enflamme vient frapper l'ennemi.	Feu	60	80	15
+Boutefeu	Le lanceur s'embrase avant de charger l'ennemi.	Feu	90	80	25
+Canicule	Le lanceur provoque une vague de chaleur.	Feu	80	70	10
+Crocs Feu	Le lanceur utilise une morsure enflammée.	Feu	55	75	15
+Feu Sacre	Le lanceur genere un feu mystique d'une intensite redoutable pour attaquer l'ennemi.	Feu	80	75	5
+Surchauffe	Attaque l'ennemi à pleine puissance.	Feu	100	70	15
+Pied Bruleur	Le lanceur envoie un coup de pied enflamme.	Feu	75	70	10
+Roue de Feu	Le lanceur s'entoure de feu et charge l'ennemi. 	Feu	60	80	25
+Jet-Pierres	Le lanceur lache une pierre sur l'ennemi.	Terre	60	70	15
+Balle Graine	Le lanceur mitraille l'ennemi avec une rafale de graines.	Terre	25	80	30
+Canon Graine	Le lanceur fait pleuvoir un deluge de graines explosives sur l'ennemi.	Terre	75	80	15
+Fouet Lianes	Fouette l'ennemi avec de fines lianes pour infliger des degats.	Terre	45	80	25
+Fulmigraine	Le corps du lanceur emet une onde de choc.	Terre	110	65	5
+Lame Feuille	Une feuille coupante comme une lame entaille l'ennemi.	Terre	90	80	15
+Martobois	Le lanceur heurte l'ennemi de son corps robuste.	Terre	100	80	15
+Eboulement	Envoie de gros rochers sur l'ennemi pour infliger des degats.	Terre	75	70	10
+Lame de Roc	Fait surgir des pierres aiguisees sous l'ennemi.	Terre	80	60	5
+Roc-Boulet	Le lanceur attaque en projetant un gros rocher sur l'ennemi.	Terre	150	70	5
+Roulade	Un rocher roule sur l'ennemi.	Terre	75	70	20
+Tomberoche	Des rochers frappent l'ennemi.	Terre	60	75	15

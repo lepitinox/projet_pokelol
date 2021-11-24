@@ -39,7 +39,7 @@ def txt_parser(bytes_list: list[bytes]) -> dict:
     Returns
     -------
     dict:
-        {col1 : {col2...coln}
+        {col1_index1 : {col2_index0: value,...coln_index0: value}, ...}
     """
     ret = {}
     items = bytes_list[0].decode("ascii").replace("\n", "").replace("\r", " ").split("\t")[1:]
@@ -86,9 +86,3 @@ def load_config(path: Union[str, Path]):
 
     """
     return json.load(path)
-
-
-if __name__ == '__main__':
-    path = "C:\\Users\\adrie\\Downloads\\data\\pokemon.txt"
-    txt = txt_openner(path)
-    print(txt_parser(txt))
