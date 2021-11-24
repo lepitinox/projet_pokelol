@@ -1,3 +1,6 @@
+from typing import List
+
+
 def choose_integer(a, b):
     """
     Function that asks a user input for a number between a and b inclusively.
@@ -11,18 +14,18 @@ def choose_integer(a, b):
     -------
     """
 
-    #Initial n value
+    # Initial n value
     n = -1
 
-    #input loop as long as number is incorrect
-    while n < a or n > b :
+    # input loop as long as number is incorrect
+    while n < a or n > b:
 
         print("Que voulez vous faire? (", a, "-", b, ")")
         n = input()
 
         try:
 
-            #convert string input to int
+            # convert string input to int
             n = int(n)
 
             # if the input is too big
@@ -35,7 +38,7 @@ def choose_integer(a, b):
 
         except ValueError:
 
-            #Handling string input error
+            # Handling string input error
             print("Erreur: \"", n, "\" n'est pas un entier!", sep='')
             print("Veuillez entrer un entier entre", a, "et", b)
             n = -1
@@ -44,6 +47,26 @@ def choose_integer(a, b):
 
     return n
 
-if __name__ == "__main__":
 
+def choose(question: str, actions: list):
+    """
+    ask the user the question and list possible chooses returns the choice
+
+    Parameters
+    ----------
+    question : str
+        the base question
+    actions : list
+
+    """
+    for nb, i in enumerate(actions):
+        print(f"{nb}/ {i[0]}")
+    print(f"{len(actions) + 1}/ Cancel")
+    print(f"\n{question} (0-{len(actions)+1})")
+    return choose_integer(0, len(actions) + 1)
+
+
+
+
+if __name__ == "__main__":
     choose_integer(0, 5)
