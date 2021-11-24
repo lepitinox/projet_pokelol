@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from typing import Union
+from typing import Union, List
 
 from .Menu.menu_input import choose_integer
 import ast
@@ -132,13 +132,13 @@ class Pokemon:
         while True:
             user_input = str(
                 input("Please enter a pokemon name :"
-                      "\n(if  you need a list of available pokemon type 'pokemon list'\n"))
+                      "\n(if you need a list of available pokemon type 'pokemon list'\n"))
             if user_input.lower() == "pokemon list":
                 print(self.poke_dict.keys())
             if self.check_name(user_input):
                 return user_input
             else:
-                print("Sorry this pokemon does not exist please ask for one og this :")
+                print("Sorry this pokemon does not exist please ask for one of those :")
                 print(self.poke_dict.keys())
 
     def check_name(self, name: str):
@@ -198,4 +198,24 @@ class Pokemon:
         self.ap -= ability.cost
         return True
 
+
+def generate_random_pokemon(lvl: int) -> Pokemon:
+    """
+    randomly generate a pokemon of level lvl, takes in account min lvl for evolved Pokemon
+
+    Parameters
+    ----------
+    lvl : int
+        level of the generated Pokemon
+
+    Returns
+    -------
+    Pokemon
+    """
+    data: dict = Pokemon.poke_dict
+    req_lvl: List[dict] = [{i: j} for i, j in data.items() if map(int, j["niveau"].replace(" ", "").split("-"))]
+    pokemon_dict: dict = random.choice(req_lvl)
+    poke = Pokemon(name=str(list(pokemon_dict.keys())[0]), config=None)
+    poke.lvl = lvl
+    return poke
 
