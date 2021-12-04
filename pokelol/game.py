@@ -26,7 +26,7 @@ class Game :
         # trainer.name = input()
 
         # TODO : affichage des pokemons du dresseur
-        # trainer.pokelist.to_string()
+        # print(trainer.pokelist)
 
         # we display the main menu and take the user input for his choice
         choices = m_out.main_menu()
@@ -37,13 +37,13 @@ class Game :
         if choice == 0:
 
             # TODO: affichage des pokemons du dresseur
-            # trainer.pokelist.to_string()
+            # print(trainer.pokelist)
             pass
 
         if choice == 1:
 
             # TODO: changement du deck du dresseur
-            # trainer.pokelist.change()
+            trainer.deck.change()
             pass
 
         if choice == 2:
@@ -112,7 +112,7 @@ class Game :
 
             elif choice == ab_len + 2:
                 # Kill all deck's pokemon to end the combat loop and quit
-                p1.deck.kill_all
+                p1.deck.kill_all()
 
     # TODO : instancier le combat
     def main_combat(self, p1, p2):
@@ -136,8 +136,7 @@ class Game :
 
         # Display deck of player1
         print("Les pokemons du", p1.name, ":")
-        # TODO: create deck.to_string
-        p1.deck.to_string()
+        print(p1.deck.decklist)
 
         # Choosing the current pokemon for player one
         print("Quel pokemon voulez vous utiliser? (0-2)")
@@ -145,7 +144,7 @@ class Game :
 
         # poke1 is player 1 currently chosen pokemon
         # TODO: create deck.current_pokemon variable
-        p1.deck.current_pokemon = p1.deck[choice]
+        p1.deck.current_pokemon = p1.deck.decklist[choice]
 
         # ========================================== #
         # ======== Player 2 starting pokemon ======= #
@@ -153,14 +152,14 @@ class Game :
 
         # Display deck of player2
         print("Les pokemons du", p2.name, ":")
-        p2.deck.to_string()
+        print(p2.deck.decklist)
 
         # Choosing the current pokemon for player one
         print("Quel pokemon voulez vous utiliser? (0-2)")
         choice = m_in.choose_integer(0, 2)
 
         # poke2 is player's one currently chosen pokemon
-        p2.deck.current_pokemon = p2.deck[choice]
+        p2.deck.current_pokemon = p2.deck.decklist[choice]
 
         # ========================================== #
         # =============== Combat loop ============== #
@@ -180,8 +179,7 @@ class Game :
             print("C'est a", p1.name,"de jouer!")
 
             #Display all current pokemon attribues
-            # TODO: create pokemon.to_string()
-            p1.deck.current_pokemon.to_string()
+            print(p1.deck.current_pokemon)
 
             # TODO: combat choices for player1 and 2
             self.player_combat_choice(p1, p2)
@@ -197,7 +195,7 @@ class Game :
                 print("C'est a", p2.name, "de jouer!")
 
                 # Display all current pokemon attribues
-                p2.deck.current_pokemon.to_string()
+                print(p2.deck.current_pokemon)
 
                 self.player_combat_choice(p2, p1)
 
