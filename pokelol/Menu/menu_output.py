@@ -12,6 +12,7 @@ def welcome_menu():
 
     print("Quel est votre nom?")
 
+
 def main_menu():
     """
     The main menu
@@ -29,5 +30,4 @@ def main_menu():
 
 
 if __name__ == "__main__":
-
     print()

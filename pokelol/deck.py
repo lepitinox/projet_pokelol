@@ -1,11 +1,9 @@
-
-
 class Deck:
 
     def __init__(self):
 
-        self.decklist = [] #pokemon list
-        self.current_pokemon = None #the pokemon that is being used for combat
+        self.decklist = []  # pokemon list
+        self.current_pokemon = None  # the pokemon that is being used for combat
 
         # TODO: add tostring option for deck
 
@@ -17,8 +15,8 @@ class Deck:
 
         """
 
-        #loop to kill all pokemons in the deck
-        for i in range (len(self.decklist)):
+        # loop to kill all pokemons in the deck
+        for i in range(len(self.decklist)):
             self.decklist[i].hp = 0
 
     def change(self):
@@ -47,12 +45,12 @@ class Deck:
         -------
         """
 
-        bool = False
+        _bool = False
 
         for i in range(self.decklist):
 
-            #if at least one pokemon is alive, we return true
-            if (self.decklist[i].hp>0):
-                bool = True
+            # if at least one pokemon is alive, we return true
+            if self.decklist[i].hp > 0:
+                _bool = True
 
-        return bool
+        return _bool

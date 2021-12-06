@@ -62,10 +62,8 @@ def choose(question: str, actions: list):
     for nb, i in enumerate(actions):
         print(f"{nb}/ {i[0]}")
     print(f"{len(actions) + 1}/ Cancel")
-    print(f"\n{question} (0-{len(actions)+1})")
+    print(f"\n{question} (0-{len(actions) + 1})")
     return choose_integer(0, len(actions) + 1)
-
-
 
 
 if __name__ == "__main__":

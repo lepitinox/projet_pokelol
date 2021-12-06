@@ -2,7 +2,7 @@ import Menu.menu_output as m_out
 import Menu.menu_input as m_in
 
 
-class Game :
+class Game:
 
     # TODO : remplir constructeur
     def __init__(self):
@@ -30,29 +30,25 @@ class Game :
 
         # we display the main menu and take the user input for his choice
         choices = m_out.main_menu()
-        choice = m_in.choose_integer(0, len(choices)-1)
+        choice = m_in.choose_integer(0, len(choices) - 1)
         print(choices[choice])
 
         # See pokemons choice:
         if choice == 0:
-
             # TODO: affichage des pokemons du dresseur
             # print(trainer.pokelist)
             pass
 
         if choice == 1:
-
             # TODO: changement du deck du dresseur
             trainer.deck.change()
             pass
 
         if choice == 2:
-
             # TODO: Combattre / Capturer un pokemon
             pass
 
         if choice == 3:
-
             # TODO: Combattre un autre dresseur
             self.main_combat()
             pass
@@ -62,7 +58,6 @@ class Game :
             pass
 
         if choice == 5:
-
             print("Merci d'avoir joué, au revoir!")
 
     def player_combat_choice(self, p1, p2):
@@ -91,12 +86,12 @@ class Game :
             print(i, ":", ab_choices)
 
         # display the rest of player choices
-        print((ab_len+1), ": Changer le pokemon")
-        print((ab_len+2), ": Passer votre tour")
-        print((ab_len+3), ": Fuir le combat")
+        print((ab_len + 1), ": Changer le pokemon")
+        print((ab_len + 2), ": Passer votre tour")
+        print((ab_len + 3), ": Fuir le combat")
 
         # choice input
-        choice = m_in.choose_integer(0, ab_len+3)
+        choice = m_in.choose_integer(0, ab_len + 3)
 
         if choice < ab_len:
             poke1.attack(poke1.abilities[choice], p2.deck.current_pokemon)
@@ -176,9 +171,9 @@ class Game :
             # ===== Player one's turn ===== #
             # ============================= #
 
-            print("C'est a", p1.name,"de jouer!")
+            print("C'est a", p1.name, "de jouer!")
 
-            #Display all current pokemon attribues
+            # Display all current pokemon attribues
             print(p1.deck.current_pokemon)
 
             # TODO: combat choices for player1 and 2
@@ -188,10 +183,9 @@ class Game :
             # ===== Player two's turn ===== #
             # ============================= #
 
-            #Check if both decks are still alive
+            # Check if both decks are still alive
 
             if p1.deck.is_alive() and p2.deck.is_alive():
-
                 print("C'est a", p2.name, "de jouer!")
 
                 # Display all current pokemon attribues
@@ -203,6 +197,5 @@ class Game :
 
 
 if __name__ == "__main__":
-
     g = Game()
     g.start(1)
