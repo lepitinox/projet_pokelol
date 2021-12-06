@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 
 
-class Dresseur:
+class Trainer:
     def __init__(self):
         self.name = None
         self.pokelist = None
