@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Any
 
 
 def choose_integer(a, b):
@@ -48,9 +48,10 @@ def choose_integer(a, b):
     return n
 
 
-def choose(question: str, actions: list):
+def choose(question: str, actions: list) -> Any:
     """
-    ask the user the question and list possible chooses returns the choice
+    ask the user a question and a list of possible chooses
+    returns the choice
 
     Parameters
     ----------
@@ -58,6 +59,10 @@ def choose(question: str, actions: list):
         the base question
     actions : list
 
+
+    Returns
+    -------
+    Any
     """
     for nb, i in enumerate(actions):
         print(f"{nb}/ {i[0]}")
