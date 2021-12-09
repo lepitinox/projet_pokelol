@@ -1,32 +1,24 @@
 import Menu.menu_output as m_out
 import Menu.menu_input as m_in
+from pokelol.trainer import Player, Npc
 
 
 class Game:
 
     # TODO : remplir constructeur
     def __init__(self):
-        pass
+        self.ia_difficulty = 0
 
-    def start(self, trainer):
+
+    def start(self):
         """
         Initialize trainer name and print the main menu
-
-        Parameters
-        ----------
-        trainer : Pokemon trainer
-
-        Returns
-        -------
-
         """
+
         m_out.welcome_menu()
 
-        # TODO: saisi nom du dresseur
-        # trainer.name = input()
-
-        # TODO : affichage des pokemons du dresseur
-        # print(trainer.pokelist)
+        joueur = Player()
+        joueur.show_pokemons()
 
         # we display the main menu and take the user input for his choice
         choices = m_out.main_menu()
@@ -35,14 +27,10 @@ class Game:
 
         # See pokemons choice:
         if choice == 0:
-            # TODO: affichage des pokemons du dresseur
-            # print(trainer.pokelist)
-            pass
+            joueur.show_pokemons()
 
         if choice == 1:
-            # TODO: changement du deck du dresseur
-            trainer.deck.change()
-            pass
+            joueur.change_deck()
 
         if choice == 2:
             # TODO: Combattre / Capturer un pokemon
@@ -50,8 +38,7 @@ class Game:
 
         if choice == 3:
             # TODO: Combattre un autre dresseur
-            self.main_combat()
-            pass
+            self.main_combat(joueur, Npc())
 
         if choice == 4:
             # TODO : Creer un autre dresseur
@@ -198,4 +185,4 @@ class Game:
 
 if __name__ == "__main__":
     g = Game()
-    g.start(1)
+    g.start()
