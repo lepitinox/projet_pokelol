@@ -4,8 +4,7 @@ collection of function for pokelol
 import json
 from io import BufferedReader
 from typing import Union
-
-from transparentpath import Path
+from pathlib import Path
 
 
 def txt_openner(file_path) -> list[bytes]:
@@ -50,7 +49,7 @@ def txt_parser(bytes_list: list[bytes]) -> dict:
             print(f"Warning: txt is encoded in something weird, problematic char is : \\{str(e).split(' ')[5]}")
             data = i.replace(b"\xe7", b"c").replace(b"\xe9", b"e").replace(b"\xe0", b"a").decode("utf-8").replace(
                 "\n", "").replace("\r", " ").split("\t")
-        ret[str(data[0]).lower()] = {str(j).lower(): str(k) for j, k in zip(items, data[1:])}
+        ret[str(data[0]).lstrip(" ").rstrip(" ")] = {str(j).replace(" ", ""): str(k).lstrip(" ").rstrip(" ") for j, k in zip(items, data[1:])}
     return ret
 
 
