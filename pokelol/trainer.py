@@ -1,42 +1,83 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from typing import List
+import random
+from typing import List, Union
 
 from pokelol.Menu.menu_input import choose
 from pokelol.pokemon import Pokemon
-
-
-class Deck:
-    def __init__(self, pokemon_list: List[Pokemon]):
-        self.pokemon_list = pokemon_list
-
-    def change_deck(self):
-        choice = choose("Which Pokemon do you want to replace ?", self.pokemon_list)
-        self.pokemon_list.pop(choice)
-
-        print("")
-
-    def __str__(self):
-        print("Your Deck :")
-        for j, i in enumerate(self.pokemon_list):
-            print(f"{j}/ {i}")
+from deck import Deck
 
 
 class Trainer:
-    def __init__(self, name, pokelist, deck):
-        self.name = name
-        self.pokelist = pokelist
-        self.deck = deck
+    """
+    Abstract class, used to define methods for Player and Npc
+    """
+    __existing_trainer = {}
+
+    def __init__(self, nb_poke: int = 6):
+        self.poke_list = None
+        self.generate_random_pokemon_list(nb_poke)
+
+    def generate_random_pokemon_list(self, list_size: int):
+        """
+        generate a random list of Pokemon of length list_size and set poke_list to it
+
+        Parameters
+        ----------
+        list_size : int (optional)
+            length of the Pokemon list
+
+        """
+        self.poke_list = [Pokemon.generate_random_pokemon(0) for _ in range(list_size)]
 
 
 class Player(Trainer):
-    def __init__(self):
-        name = str(input("what's your name ?\n"))
-        # TODO (aducourthial): selection of the pokelist and deck
-        pokelist = None
-        deck = None
-        super().__init__(name, pokelist, deck)
+    def __init__(self, name: Union[str, None] = None):
+        if name is None:
+            name = str(input("Quel est votre nom?\n"))
+        self.name = name
+        super().__init__()
+        self.deck = Deck(self.poke_list[:3])
 
     def change_deck(self):
-        self.deck.change_deck()
+        print(self.deck)
+        # TODO (aducourthial): Crée un obj/funcv pour faire des choix dans une list (et verif de type)
+        a = int(input("le quelle ?"))
+        popke = self.deck.decklist[a]
+        s = 0
+        rt = {}
+        for pokemon in self.poke_list:
+            if pokemon not in self.deck:
+                print(f"{s}: {pokemon}")
+                s += 1
+                rt[s] = pokemon
+        ok = int(input("pour ?"))
+        self.deck.change(popke, rt[ok])
 
+    def show_pokemons(self):
+        """
+        display all pokemons
+        """
+        for pokemon in self.poke_list:
+            if pokemon in self.deck:
+                print(f"in deck : {pokemon}")
+            else:
+                print(f"not in deck : {pokemon}")
+
+
+class WildPoke(Trainer):
+    def __init__(self):
+        super().__init__(nb_poke=1)
+
+
+class Npc(Trainer):
+    npc_names = ["Jcvd", "Mozinor"]
+
+    def __init__(self):
+        self.name = random.choice(self.npc_names)
+        super().__init__()
+        self.deck = Deck(self.poke_list[:3])
+
+    @classmethod
+    def _generate_random_npc(cls):
+        pass
