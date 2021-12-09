@@ -9,6 +9,7 @@ from env_loader import POKEMON_PATH
 from ability import Attack, Defence
 import random
 
+# May be used later
 POKEMON_ARGS = [
     "name",
     "p_type",
@@ -94,27 +95,28 @@ class Pokemon:
         dict
         """
         ret = {}
-        pokemon_base_config = self.poke_dict[name.lower()]
-        ret["p_type"] = pokemon_base_config["element"]
+        pokemon_base_config = self.poke_dict[name]
+        ret["name"] = name
+        ret["p_type"] = pokemon_base_config["Element"]
         ret["lvl"] = 0
         ret["xp"] = 0
 
-        hp_range = pokemon_base_config["vie"].replace(" ", "").split("-")
+        hp_range = pokemon_base_config["Vie"].replace(" ", "").split("-")
         ret["max_hp"] = ret["hp"] = random.randint(int(hp_range[0]), int(hp_range[1]))
 
-        ap_range = pokemon_base_config["energie"].replace(" ", "").split("-")
+        ap_range = pokemon_base_config["Energie"].replace(" ", "").split("-")
         ret["max_ap"] = ret["ap"] = random.randint(int(ap_range[0]), int(ap_range[1]))
 
-        ret["resistance"] = map(int, pokemon_base_config["resistance"].replace(" ", "").split("-"))
+        ret["resistance"] = random.choice(list(map(int, pokemon_base_config["Resistance"].replace(" ", "").split("-"))))
 
-        ret["ap_regen"] = map(int, pokemon_base_config["regeneration"].replace(" ", "").split("-"))
-
+        ret["ap_regen"] = random.choice(list(map(int, pokemon_base_config["Regeneration"].replace(" ", "").split("-"))))
         ret["abilities"] = {"attack": [], "defence": []}
-        for ability in ast.literal_eval(pokemon_base_config["competences"]):
-            if ability.lower() in Attack.attack_dict.keys():
-                ret["abilities"]["attack"].append(Attack(Attack.attack_dict[ability.lower()]))
-            elif ability.lower() in Defence.defence_dict.keys():
-                ret["abilities"]["defence"].append(Defence(Defence.defence_dict[ability.lower()]))
+        for ability in list(map(lambda x: x.replace('"', "").replace("[", "").replace("]", "").lstrip(" ").rstrip(" "),
+                                pokemon_base_config["Competences"].split(","))):
+            if ability in Attack.attack_dict.keys():
+                ret["abilities"]["attack"].append(Attack(ability, Attack.attack_dict[ability]))
+            elif ability in Defence.defence_dict.keys():
+                ret["abilities"]["defence"].append(Defence(ability, Defence.defence_dict[ability]))
             else:
                 raise KeyError(f"The ability : {ability} is nether in the attack nor the defence config file")
 
@@ -198,24 +200,26 @@ class Pokemon:
         self.ap -= ability.cost
         return True
 
+    @classmethod
+    def generate_random_pokemon(cls, lvl: int) -> "Pokemon":
+        """
+        randomly generate a pokemon of level lvl, takes in account min lvl for evolved Pokemon
 
-def generate_random_pokemon(lvl: int) -> Pokemon:
-    """
-    randomly generate a pokemon of level lvl, takes in account min lvl for evolved Pokemon
+        Parameters
+        ----------
+        lvl : int
+            level of the generated Pokemon
 
-    Parameters
-    ----------
-    lvl : int
-        level of the generated Pokemon
+        Returns
+        -------
+        Pokemon
+        """
+        data: dict = cls.poke_dict
+        req_lvl: List[dict] = [{i: j} for i, j in data.items() if map(int, j["Niveau"].replace(" ", "").split("-"))]
+        pokemon_dict: dict = random.choice(req_lvl)
+        poke = Pokemon(name=str(list(pokemon_dict.keys())[0]), config=None)
+        poke.lvl = lvl
+        return poke
 
-    Returns
-    -------
-    Pokemon
-    """
-    data: dict = Pokemon.poke_dict
-    req_lvl: List[dict] = [{i: j} for i, j in data.items() if map(int, j["niveau"].replace(" ", "").split("-"))]
-    pokemon_dict: dict = random.choice(req_lvl)
-    poke = Pokemon(name=str(list(pokemon_dict.keys())[0]), config=None)
-    poke.lvl = lvl
-    return poke
-
+    def __repr__(self):
+        return f"{self.name}({self.lvl}, {self.xp}/1000, {self.p_type}): Vie {self.hp}/{self.max_hp}, Energie ({self.ap}/{self.max_ap}) (+{self.ap_regen}), Resistance ({self.resistance})\n {self.abilities}"
