@@ -1,24 +1,22 @@
 import Menu.menu_output as m_out
 import Menu.menu_input as m_in
-from pokelol.trainer import Player, Npc
-
+from pokelol.trainer import Player, Npc, WildPoke
 
 class Game:
 
     # TODO : remplir constructeur
     def __init__(self):
         self.ia_difficulty = 0
+        m_out.welcome_menu()
+
+        self.joueur = Player()
+        self.joueur.show_pokemons()
 
 
     def start(self):
         """
         Initialize trainer name and print the main menu
         """
-
-        m_out.welcome_menu()
-
-        joueur = Player()
-        joueur.show_pokemons()
 
         # we display the main menu and take the user input for his choice
         choices = m_out.main_menu()
@@ -27,22 +25,28 @@ class Game:
 
         # See pokemons choice:
         if choice == 0:
-            joueur.show_pokemons()
+            self.joueur.show_pokemons()
+            self.start()
 
         if choice == 1:
-            joueur.change_deck()
+            self.joueur.change_deck()
+            self.start()
 
         if choice == 2:
             # TODO: Combattre / Capturer un pokemon
-            pass
+            self.main_combat(self.joueur, WildPoke())
+            self.start()
 
         if choice == 3:
             # TODO: Combattre un autre dresseur
-            self.main_combat(joueur, Npc())
+            self.main_combat(self.joueur, Npc())
+            self.start()
 
         if choice == 4:
             # TODO : Creer un autre dresseur
-            pass
+            print("Creating a new Player")
+            self.joueur = Player()
+            self.start()
 
         if choice == 5:
             print("Merci d'avoir joué, au revoir!")
@@ -117,8 +121,8 @@ class Game:
         # ========================================== #
 
         # Display deck of player1
-        print("Les pokemons du", p1.name, ":")
-        print(p1.deck.decklist)
+        print("Les pokemons de", p1.name, ":")
+        print(p1.deck)
 
         # Choosing the current pokemon for player one
         print("Quel pokemon voulez vous utiliser? (0-2)")
@@ -133,8 +137,8 @@ class Game:
         # ========================================== #
 
         # Display deck of player2
-        print("Les pokemons du", p2.name, ":")
-        print(p2.deck.decklist)
+        print("Les pokemons de", p2.name, ":")
+        print(p2.deck)
 
         # Choosing the current pokemon for player one
         print("Quel pokemon voulez vous utiliser? (0-2)")

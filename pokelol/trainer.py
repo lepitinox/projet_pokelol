@@ -49,8 +49,9 @@ class Player(Trainer):
         for pokemon in self.poke_list:
             if pokemon not in self.deck:
                 print(f"{s}: {pokemon}")
-                s += 1
                 rt[s] = pokemon
+                s += 1
+
         ok = int(input("pour ?"))
         self.deck.change(popke, rt[ok])
 
@@ -60,14 +61,17 @@ class Player(Trainer):
         """
         for pokemon in self.poke_list:
             if pokemon in self.deck:
-                print(f"in deck : {pokemon}")
+                print(f"In deck : {pokemon}")
             else:
-                print(f"not in deck : {pokemon}")
+                print(f"Not in deck : {pokemon}")
 
 
 class WildPoke(Trainer):
     def __init__(self):
         super().__init__(nb_poke=1)
+        self.deck = Deck(self.poke_list)
+        # use Pokemon name as trainer name
+        self.name = self.poke_list[0].name
 
 
 class Npc(Trainer):
