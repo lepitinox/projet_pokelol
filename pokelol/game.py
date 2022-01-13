@@ -3,7 +3,6 @@ import Menu.menu_input as m_in
 import combat
 import trainer
 
-
 class Game :
 
     # TODO : remplir constructeur
