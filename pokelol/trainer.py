@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import random
-from typing import List, Union
+from typing import Union
 
-from pokelol.Menu.menu_input import choose
-from pokelol.pokemon import Pokemon
 from deck import Deck
+from pokelol.pokemon import Pokemon
+from interface import print, multiple_choices_no_back, input
 
 
 class Trainer:
@@ -34,26 +34,27 @@ class Trainer:
 class Player(Trainer):
     def __init__(self, name: Union[str, None] = None):
         if name is None:
-            name = str(input("Quel est votre nom?\n"))
+            name = str(input("Quel est votre nom?"))
         self.name = name
         super().__init__()
         self.deck = Deck(self.poke_list[:3])
 
     def change_deck(self):
-        print(self.deck)
-        # TODO (aducourthial): Crée un obj/funcv pour faire des choix dans une list (et verif de type)
-        a = int(input("le quelle ?"))
-        popke = self.deck.decklist[a]
-        s = 0
-        rt = {}
-        for pokemon in self.poke_list:
-            if pokemon not in self.deck:
-                print(f"{s}: {pokemon}")
-                rt[s] = pokemon
-                s += 1
+        """
+        replace a pokemon of the deck
+        Returns
+        -------
 
-        ok = int(input("pour ?"))
-        self.deck.change(popke, rt[ok])
+        """
+
+        choices = {str(i): i for i in self.deck.decklist}
+        ress = multiple_choices_no_back(choices, "Quel pokémon voulez vous changer ?")
+
+        ok_pok = [i for i in self.poke_list if i not in self.deck.decklist]
+
+        choices = {str(i): i for i in ok_pok}
+        res = multiple_choices_no_back(choices, "Quel pokémon ajouter ?")
+        self.deck.change(ress, res)
 
     def show_pokemons(self):
         """
@@ -65,22 +66,28 @@ class Player(Trainer):
             else:
                 print(f"Not in deck : {pokemon}")
 
+    def capture(self, p2):
+
+        return
+
 
 class WildPoke(Trainer):
-    def __init__(self):
+    def __init__(self, ia):
         super().__init__(nb_poke=1)
         self.deck = Deck(self.poke_list)
         # use Pokemon name as trainer name
         self.name = self.poke_list[0].name
+        self.ia = ia
 
 
 class Npc(Trainer):
     npc_names = ["Jcvd", "Mozinor"]
 
-    def __init__(self):
+    def __init__(self, ia):
         self.name = random.choice(self.npc_names)
         super().__init__()
         self.deck = Deck(self.poke_list[:3])
+        self.ia = ia
 
     @classmethod
     def _generate_random_npc(cls):
