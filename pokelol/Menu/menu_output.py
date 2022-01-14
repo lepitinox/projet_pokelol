@@ -4,13 +4,11 @@ def welcome_menu():
     Returns : no return
     -------
     """
-
-    print("#--------------------------------------#")
-    print("#        Bienvenue dans POOkemon!      #")
-    print("#  Le jeu de Pokemon Oriente Objet :D  #")
-    print("#--------------------------------------#")
-
-    print("Quel est votre nom?")
+    return \
+        "#--------------------------------------#\n" \
+        "#        Bienvenue dans POOkemon!      #\n" \
+        "#  Le jeu de Pokemon Oriente Objet :D  #\n" \
+        "#--------------------------------------#\n"
 
 
 def main_menu():
