@@ -85,6 +85,23 @@ class Pokemon:
         else:
             self.evolution_lvl = None
 
+    def __reinit__(self, config):
+        self.name = config["name"]
+        self.p_type = config["p_type"]
+        self.max_hp = config["max_hp"]
+        self.max_ap = config["max_ap"]
+        self.hp = config["hp"]
+        self.ap = config["ap"]
+        self.abilities = config["abilities"]
+        self.lvl = config["lvl"]
+        self.xp = config["xp"]
+        self.ap_regen = config["ap_regen"]
+        self.resistance = config["resistance"]
+        self.evolution = config["evolution"]
+        if self.evolution != "":
+            self.evolution_lvl = int(self.poke_dict[self.evolution]["Niveau"].split(" ")[0])
+        else:
+            self.evolution_lvl = None
     """ Pokemon init """
 
     def create_pokemon(self, name: str) -> dict:
@@ -130,11 +147,10 @@ class Pokemon:
 
     def xp_gain(self, xp_gain):
         newxp = self.xp + xp_gain
-        if newxp >= 100:
+        while newxp >= 100:
             self.gain_lvl()
-            self.xp -= 100
-        else:
-            self.xp = newxp
+            newxp -= 100
+        self.xp = newxp
 
     def gain_lvl(self):
         self.lvl += 1
@@ -142,10 +158,15 @@ class Pokemon:
         self.max_ap += random.randint(1,4)
         self.resistance += random.randint(1, 3)
         if self.evolution_lvl is not None:
+
             lvl = copy.deepcopy(self.evolution_lvl)
             if self.lvl >= self.evolution_lvl:
-                self.create_pokemon(self.evolution)
+                print(f"What ? {self.name} is evolving ? :o")
+                conf = self.create_pokemon(self.evolution)
+                self.__reinit__(conf)
                 self.lvl = lvl
+        self.hp = self.max_hp
+        self.ap = self.max_ap
 
     def ask_for_name(self):
         """
@@ -262,6 +283,6 @@ class Pokemon:
 
     def __repr__(self):
         n_ = "\n"
-        return f"{self.name}({self.lvl}, {self.xp}/1000, {self.p_type}): Vie {self.hp}/{self.max_hp}, Energie ({self.ap}/" \
+        return f"{self.name}({self.lvl}, {self.xp}/100, {self.p_type}): Vie {self.hp}/{self.max_hp}, Energie ({self.ap}/" \
                f"{self.max_ap}) (+{self.ap_regen}), Resistance ({self.resistance})\n" \
                f"{f'{n_}'.join(map(str,list(self.abilities.values())[0]))}\n"
