@@ -1,190 +1,173 @@
+from time import sleep
+from typing import Union
+
+import numpy as np
+
 import Menu.menu_output as m_out
-import Menu.menu_input as m_in
-from pokelol.trainer import Player, Npc, WildPoke
+from pokelol.trainer import Player, Npc, WildPoke, Trainer
+from interface import print, multiple_choices_no_back, input, multiple_choices, clear
+from ia import IA
+from ability import Attack, Defence
+
 
 class Game:
 
-    # TODO : remplir constructeur
-    def __init__(self):
-        self.ia_difficulty = 0
-        m_out.welcome_menu()
+    def __init__(self, difficulty: int = 0, use_player: Player = None):
+        self.ia_difficulty = difficulty
 
-        self.joueur = Player()
+        print(m_out.welcome_menu())
+
+        if use_player is None:
+            use_player = Player()
+
+        self.joueur = use_player
         self.joueur.show_pokemons()
 
-
     def start(self):
-        """
-        Initialize trainer name and print the main menu
-        """
 
-        # we display the main menu and take the user input for his choice
-        choices = m_out.main_menu()
-        choice = m_in.choose_integer(0, len(choices) - 1)
-        print(choices[choice])
+        self.main_menu()
 
-        # See pokemons choice:
-        if choice == 0:
-            self.joueur.show_pokemons()
+    def main_menu(self):
+
+        def display_poke():
+            poke_str = self.joueur.show_pokemons()
             self.start()
 
-        if choice == 1:
+        def change_deck():
             self.joueur.change_deck()
             self.start()
 
-        if choice == 2:
-            # TODO: Combattre / Capturer un pokemon
-            self.main_combat(self.joueur, WildPoke())
+        def vs_wild_p():
+            self.main_combat(self.joueur, WildPoke(IA(self.ia_difficulty)))
             self.start()
 
-        if choice == 3:
-            # TODO: Combattre un autre dresseur
-            self.main_combat(self.joueur, Npc())
+        def vs_trainer():
+            self.main_combat(self.joueur, Npc(IA(self.ia_difficulty)))
             self.start()
 
-        if choice == 4:
-            # TODO : Creer un autre dresseur
-            print("Creating a new Player")
+        def create_new_player():
             self.joueur = Player()
             self.start()
 
-        if choice == 5:
+        def _quit():
+            print("Shutting down game:")
             print("Merci d'avoir joué, au revoir!")
 
-    def player_combat_choice(self, p1, p2):
+        choices = {
+            "Voir vos pokemons": display_poke,
+            "Changer le deck": change_deck,
+            "Combattre / Capturer un pokemon": vs_wild_p,
+            "Combattre un autre dresseur": vs_trainer,
+            "Creer un autre dresseur": create_new_player,
+            "Quitter": _quit
+        }
+        multiple_choices_no_back(choices)()
+
+    def main_combat(self, p1: Player, p2: Union[Npc, WildPoke]):
         """
 
         Parameters
         ----------
         p1 : The user's dresseur (player 1)
         p2 : The opponent's dresseur (player 2)
+
         Returns
         -------
 
         """
-        poke1 = p1.deck.current_pokemon
+        if p1 == p2:
+            print("You can play against yourself")
+            return
+        print("Combat entre ", p1.name, " et ", p2.name)
+        fight = Fight(p1, p2)
+        fight.fight()
 
-        # poke1's ability choices
-        ab_choices = []
-        for i in range(len(poke1.abilities)):
-            ab_choices.append(poke1.abilities[i])
 
-        # number of abilities
-        ab_len = len(ab_choices)
+class Fight:
 
-        # display poke1's ability choices
-        for i in range(ab_choices):
-            print(i, ":", ab_choices)
-
-        # display the rest of player choices
-        print((ab_len + 1), ": Changer le pokemon")
-        print((ab_len + 2), ": Passer votre tour")
-        print((ab_len + 3), ": Fuir le combat")
-
-        # choice input
-        choice = m_in.choose_integer(0, ab_len + 3)
-
-        if choice < ab_len:
-            poke1.attack(poke1.abilities[choice], p2.deck.current_pokemon)
-
+    def __init__(self, f1: Player, f2: Union[Npc, WildPoke]):
+        self.turn = 1
+        self.p1 = f1
+        self.p2 = f2
+        if isinstance(f2, Npc):
+            self.f_type = "JcJ"
         else:
-            if choice == ab_len:
-                # TODO: Add this function to Deck class
-                p1.deck.change_curr_pokemon()
+            self.f_type = "JcE"
+        self.winner = None
 
-            elif choice == ab_len + 1:
-                # Do nothing (Pass turn)
-                pass
+    def prep_fight(self):
+        self.p1.deck.heal_all()
+        self.p2.deck.heal_all()
+        self.p1.deck.change_pokemon()
+        self.p2.ia.choose_pokemon(self.p2)
 
-            elif choice == ab_len + 2:
-                # Kill all deck's pokemon to end the combat loop and quit
-                p1.deck.kill_all()
+    def fight(self):
+        self.prep_fight()
+        while True:
+            self.player_turn()
+            if self.winner is not None or not self.p2.deck.is_alive():
+                self.winner = self.p1
+                break
+            self.ia_turn()
+            if self.winner is not None or not self.p1.deck.is_alive():
+                self.winner = self.p2
+                break
+            self.turn += 1
+            self.p1.deck.current_pokemon.regen()
+            self.p2.deck.current_pokemon.regen()
+        print(f"{self.winner} a gagné !")
 
-    # TODO : instancier le combat
-    def main_combat(self, p1, p2):
-        """
+        if self.f_type == "JcJ":
+            looser = [self.p1, self.p2].pop([self.p1, self.p2].index(self.winner))
+            for i in self.winner.deck.decklist:
+                xp_gain = 10 + (np.mean([i.lvl for i in looser.deck.decklist])) - i.lvl
+                i.gain_xp(xp_gain)
+        else:
+            if self.winner == self.p1:
+                for i in self.winner.deck.decklist:
+                    xp_gain = (10 + self.p2.deck.decklist[0].lvl - i.lvl)/3
+                    i.gain_xp(xp_gain)
 
-        Parameters
-        ----------
-        p1 : The user's dresseur (player 1)
-        p2 : The opponent's dresseur (player 2)
+    def player_turn(self):
+        print(self.p1.deck.current_pokemon)
 
-        Returns
-        -------
+        def abilities_menu():
+            abi = self.p1.deck.current_pokemon.abilities_menu()
+            _choices = {str(i): i for i in abi}
+            res = multiple_choices(_choices, "Quelle compétence voulez vous utiliser ?")
+            if isinstance(res, Attack):
+                ok = self.p1.deck.current_pokemon.attack(res, self.p2.deck.current_pokemon)
+                if not ok:
+                    abilities_menu()
+            elif isinstance(res, Defence):
+                ok = self.p1.deck.current_pokemon.defend(res)
+                if not ok:
+                    abilities_menu()
 
-        """
-        # Combat text display between both dresseurs
-        print("Combat entre", p1.name, "et", p2.name)
+        if self.p1.deck.current_pokemon.hp <= 0:
+            self.p1.deck.change_pokemon()
+            if self.p1.deck.current_pokemon is None:
+                # if no pokemon left, p2 is the winner
+                self.winner = self.p2
+                return
+        choices = {"Change poke": self.p1.deck.change_pokemon,
+                   "Utiliser une compétance": abilities_menu,
+                   "Passer le tour": lambda: 1}
+        if self.f_type.lower() == "JCJ".lower():
+            choices["ff"] = self.p1.deck.kill_all
+        else:
+            choices["Capturer"] = self.capture_try
+        multiple_choices_no_back(choices)()
+        print("Fin du tour")
 
-        # ========================================== #
-        # ======== Player 1 starting pokemon ======= #
-        # ========================================== #
+    def capture_try(self):
+        ok = self.p1.capture(self.p2)
+        if ok:
+            print(f"Vous avez capturé le pokemon : {self.p2.name} !")
+            self.winner = self.p1
 
-        # Display deck of player1
-        print("Les pokemons de", p1.name, ":")
-        print(p1.deck)
-
-        # Choosing the current pokemon for player one
-        print("Quel pokemon voulez vous utiliser? (0-2)")
-        choice = m_in.choose_integer(0, 2)
-
-        # poke1 is player 1 currently chosen pokemon
-        # TODO: create deck.current_pokemon variable
-        p1.deck.current_pokemon = p1.deck.decklist[choice]
-
-        # ========================================== #
-        # ======== Player 2 starting pokemon ======= #
-        # ========================================== #
-
-        # Display deck of player2
-        print("Les pokemons de", p2.name, ":")
-        print(p2.deck)
-
-        # Choosing the current pokemon for player one
-        print("Quel pokemon voulez vous utiliser? (0-2)")
-        choice = m_in.choose_integer(0, 2)
-
-        # poke2 is player's one currently chosen pokemon
-        p2.deck.current_pokemon = p2.deck.decklist[choice]
-
-        # ========================================== #
-        # =============== Combat loop ============== #
-        # ========================================== #
-
-        turn = 1
-
-        # TODO: create a function to check if deck is alive
-        while p1.deck.is_alive() and p2.deck.is_alive():
-
-            print("Tour", turn)
-
-            # ============================= #
-            # ===== Player one's turn ===== #
-            # ============================= #
-
-            print("C'est a", p1.name, "de jouer!")
-
-            # Display all current pokemon attribues
-            print(p1.deck.current_pokemon)
-
-            # TODO: combat choices for player1 and 2
-            self.player_combat_choice(p1, p2)
-
-            # ============================= #
-            # ===== Player two's turn ===== #
-            # ============================= #
-
-            # Check if both decks are still alive
-
-            if p1.deck.is_alive() and p2.deck.is_alive():
-                print("C'est a", p2.name, "de jouer!")
-
-                # Display all current pokemon attribues
-                print(p2.deck.current_pokemon)
-
-                self.player_combat_choice(p2, p1)
-
-                turn += 1
+    def ia_turn(self):
+        pass
 
 
 if __name__ == "__main__":
