@@ -1,6 +1,7 @@
 from typing import List, Union
 
 from pokelol.Menu.menu_input import choose
+from pokelol.interface import multiple_choices_no_back
 from pokelol.pokemon import Pokemon
 
 
@@ -8,12 +9,11 @@ class Deck:
 
     def __init__(self, pokemon_list: List[Pokemon]):
         self.decklist = pokemon_list
+        self.current_pokemon = pokemon_list[0]
 
     def change_deck(self):
         choice = choose("Which Pokemon do you want to replace ?", self.decklist)
         self.decklist.pop(choice)
-
-        print("")
 
     def _change_one_pokemon(self, pokemon_to_change: Union[Pokemon, str], new_pokemon: Pokemon) -> bool:
         """
@@ -42,11 +42,12 @@ class Deck:
             yield i
 
     def __str__(self):
-        a = ""
-        a += "Your Deck :\n"
-        for j, i in enumerate(self.decklist):
-            a += f"{j}/ {i}\n"
-        return a
+        return "\n".join([str(i) for i in self.decklist])
+
+    def heal_all(self):
+        for i in self.decklist:
+            i.hp = i.max_hp
+            i.ap = i.max_ap
 
     def kill_all(self):
         """
@@ -72,14 +73,25 @@ class Deck:
         self.decklist.pop(self.decklist.index(name))
         self.decklist.append(new)
 
-    def change_curr_pokemon(self):
+    def change_pokemon(self):
+        choices = {str(i): i for i in self.decklist if i.hp > 0}
+        if len(choices) == 0:
+            self.current_pokemon = None
+            return
+        poke = multiple_choices_no_back(choices, "Quel pokemon voulez vous utiliser?")
+        self.change_curr_pokemon(poke)
+
+    def change_curr_pokemon(self, poke: Pokemon):
         """
         Changes the current pokemon used in combat
         Returns
         -------
 
         """
-        pass
+        if poke in self.decklist:
+            self.current_pokemon = poke
+        else:
+            print("this pokemon is not in your deck, using last pokemon")
 
     def is_alive(self):
         """
