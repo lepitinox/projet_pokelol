@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import copy
 from typing import Union, List
 
 from .Menu.menu_input import choose_integer
@@ -78,6 +79,11 @@ class Pokemon:
         self.xp = self.base_config["xp"]
         self.ap_regen = self.base_config["ap_regen"]
         self.resistance = self.base_config["resistance"]
+        self.evolution = self.base_config["evolution"]
+        if self.evolution != "":
+            self.evolution_lvl = int(self.poke_dict[self.evolution]["Niveau"].split(" ")[0])
+        else:
+            self.evolution_lvl = None
 
     """ Pokemon init """
 
@@ -100,16 +106,16 @@ class Pokemon:
         ret["p_type"] = pokemon_base_config["Element"]
         ret["lvl"] = 0
         ret["xp"] = 0
-
+        ret["evolution"] = pokemon_base_config["Apres"]
         hp_range = pokemon_base_config["Vie"].replace(" ", "").split("-")
         ret["max_hp"] = ret["hp"] = random.randint(int(hp_range[0]), int(hp_range[1]))
 
         ap_range = pokemon_base_config["Energie"].replace(" ", "").split("-")
         ret["max_ap"] = ret["ap"] = random.randint(int(ap_range[0]), int(ap_range[1]))
-
-        ret["resistance"] = random.choice(list(map(int, pokemon_base_config["Resistance"].replace(" ", "").split("-"))))
-
-        ret["ap_regen"] = random.choice(list(map(int, pokemon_base_config["Regeneration"].replace(" ", "").split("-"))))
+        temp = list(map(int, pokemon_base_config["Resistance"].replace(" ", "").split("-")))
+        ret["resistance"] = random.randint(temp[0],temp[1])
+        temp = list(map(int, pokemon_base_config["Regeneration"].replace(" ", "").split("-")))
+        ret["ap_regen"] = random.randint(temp[0],temp[1])
         ret["abilities"] = {"attack": [], "defence": []}
         for ability in list(map(lambda x: x.replace('"', "").replace("[", "").replace("]", "").lstrip(" ").rstrip(" "),
                                 pokemon_base_config["Competences"].split(","))):
@@ -121,6 +127,25 @@ class Pokemon:
                 raise KeyError(f"The ability : {ability} is nether in the attack nor the defence config file")
 
         return ret
+
+    def xp_gain(self, xp_gain):
+        newxp = self.xp + xp_gain
+        if newxp >= 100:
+            self.gain_lvl()
+            self.xp -= 100
+        else:
+            self.xp = newxp
+
+    def gain_lvl(self):
+        self.lvl += 1
+        self.max_hp += random.randint(1, 5)
+        self.max_ap += random.randint(1,4)
+        self.resistance += random.randint(1, 3)
+        if self.evolution_lvl is not None:
+            lvl = copy.deepcopy(self.evolution_lvl)
+            if self.lvl >= self.evolution_lvl:
+                self.create_pokemon(self.evolution)
+                self.lvl = lvl
 
     def ask_for_name(self):
         """
@@ -159,6 +184,17 @@ class Pokemon:
 
     """ Pokemon Methods """
 
+    def abilities_menu(self):
+
+        return self.abilities["attack"] + self.abilities["defence"]
+
+    def regen(self):
+        newap = self.ap + self.ap_regen
+        if newap > self.max_ap:
+            self.ap = self.max_ap
+        else:
+            self.ap = newap
+
     def attack(self, ability: Attack, other: "Pokemon"):
         """
         This function use the ability on other
@@ -175,8 +211,10 @@ class Pokemon:
         bool
         """
         if ability.cost > self.ap:
+            print(f"Vous n'avez pas assez de point d'attaque : {self.ap}/{self.max_ap}")
             return False
-        ability(other)
+        print(f"Vous attaquez {other.name} avec {ability.name}")
+        ability(self, other)
         self.ap -= ability.cost
         return True
 
@@ -195,7 +233,9 @@ class Pokemon:
         bool
         """
         if ability.cost > self.ap:
+            print(f"Vous n'avez pas assez de point d'attaque : {self.ap}/{self.max_ap}")
             return False
+        print(f"{self.name} utilise {ability.name}")
         ability(self)
         self.ap -= ability.cost
         return True
