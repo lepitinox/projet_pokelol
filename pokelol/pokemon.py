@@ -211,9 +211,8 @@ class Pokemon:
         bool
         """
         if ability.cost > self.ap:
-            print(f"Vous n'avez pas assez de point d'attaque : {self.ap}/{self.max_ap}")
+            print(f"{self.name} n'a pas assez de point d'attaque pour lancer {ability.name} : {self.ap}/{self.max_ap}")
             return False
-        print(f"Vous attaquez {other.name} avec {ability.name}")
         ability(self, other)
         self.ap -= ability.cost
         return True
@@ -233,7 +232,7 @@ class Pokemon:
         bool
         """
         if ability.cost > self.ap:
-            print(f"Vous n'avez pas assez de point d'attaque : {self.ap}/{self.max_ap}")
+            print(f"{self.name} n'a pas assez de point d'attaque pour lancer {ability.name} : {self.ap}/{self.max_ap}")
             return False
         print(f"{self.name} utilise {ability.name}")
         ability(self)
@@ -255,11 +254,14 @@ class Pokemon:
         Pokemon
         """
         data: dict = cls.poke_dict
-        req_lvl: List[dict] = [{i: j} for i, j in data.items() if map(int, j["Niveau"].replace(" ", "").split("-"))]
+        req_lvl: List[dict] = [{i: j} for i, j in data.items() if lvl in range(*list(map(int, j["Niveau"].replace(" ", "").split("-"))))]
         pokemon_dict: dict = random.choice(req_lvl)
         poke = Pokemon(name=str(list(pokemon_dict.keys())[0]), config=None)
         poke.lvl = lvl
         return poke
 
     def __repr__(self):
-        return f"{self.name}({self.lvl}, {self.xp}/1000, {self.p_type}): Vie {self.hp}/{self.max_hp}, Energie ({self.ap}/{self.max_ap}) (+{self.ap_regen}), Resistance ({self.resistance})\n {self.abilities}"
+        n_ = "\n"
+        return f"{self.name}({self.lvl}, {self.xp}/1000, {self.p_type}): Vie {self.hp}/{self.max_hp}, Energie ({self.ap}/" \
+               f"{self.max_ap}) (+{self.ap_regen}), Resistance ({self.resistance})\n" \
+               f"{f'{n_}'.join(map(str,list(self.abilities.values())[0]))}\n"

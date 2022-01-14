@@ -76,16 +76,17 @@ class Attack(Ability):
 
         return dmg
 
-    def calc_succes(self):
+    def calc_success(self):
         return random.randint(0, 100) <= self.accuracy
 
     def __call__(self, me, other):
-        if self.calc_succes():
+        if self.calc_success():
             damage = self.calc_damage(me, other)
-            print(f"Vous infliger {damage} de dégats a {other.name}")
+            print(f"{self.name} inflige {damage} de dégats a {other.name}")
             other.hp -= damage
         else:
             print(f"{me.name} a rater son attaque")
+
 
 class Defence(Ability):
     defence_dict = txt_parser(txt_openner(DEFENSE_PATH))

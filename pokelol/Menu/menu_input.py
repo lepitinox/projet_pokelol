@@ -50,7 +50,7 @@ def choose_integer(a, b):
 
 def choose(question: str, actions: list) -> Any:
     """
-    ask the user a question and a list of possible chooses
+    ask the user a question and a list of possible choices
     returns the choice
 
     Parameters

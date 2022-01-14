@@ -1,6 +1,6 @@
 import sys
-from typing import Callable, Iterable
-import os
+from typing import Callable
+
 
 class Interface:
     """
@@ -15,7 +15,7 @@ class Interface:
 
     def interaction(self, question):
         self(question)
-        return sys.stdin.readline()
+        return sys.stdin.readline().strip("\n")
 
     def display_single_string(self, string):
         self(string)
@@ -86,7 +86,6 @@ class Interface:
         return rt_[number]
 
 
-
 my_print = Interface()
 
 
@@ -104,4 +103,3 @@ def input(question):
 
 def multiple_choices(choices: dict, question: str = "", back_callable: Callable = None):
     return my_print.multiple_choices(choices, question, back_callable)
-

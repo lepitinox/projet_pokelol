@@ -46,7 +46,7 @@ def txt_parser(bytes_list: list[bytes]) -> dict:
         try:
             data = i.decode("utf-8").replace("\n", "").replace("\r", " ").split("\t")
         except Exception as e:
-            print(f"Warning: txt is encoded in something weird, problematic char is : \\{str(e).split(' ')[5]}")
+            # print(f"Warning: txt is encoded in something weird, problematic char is : \\{str(e).split(' ')[5]}")
             data = i.replace(b"\xe7", b"c").replace(b"\xe9", b"e").replace(b"\xe0", b"a").decode("utf-8").replace(
                 "\n", "").replace("\r", " ").split("\t")
         ret[str(data[0]).lstrip(" ").rstrip(" ")] = {str(j).replace(" ", ""): str(k).lstrip(" ").rstrip(" ") for j, k in zip(items, data[1:])}

@@ -5,7 +5,7 @@ import numpy as np
 
 import Menu.menu_output as m_out
 from pokelol.trainer import Player, Npc, WildPoke, Trainer
-from interface import print, multiple_choices_no_back, input, multiple_choices, clear
+from interface import print, multiple_choices_no_back, input, multiple_choices
 from ia import IA
 from ability import Attack, Defence
 
@@ -21,6 +21,7 @@ class Game:
             use_player = Player()
 
         self.joueur = use_player
+        print("Vos Pokemon : ")
         self.joueur.show_pokemons()
 
     def start(self):
@@ -78,7 +79,7 @@ class Game:
         if p1 == p2:
             print("You can play against yourself")
             return
-        print("Combat entre ", p1.name, " et ", p2.name)
+        print(f"Combat entre {p1.name} et {p2.name}")
         fight = Fight(p1, p2)
         fight.fight()
 
@@ -104,6 +105,7 @@ class Fight:
     def fight(self):
         self.prep_fight()
         while True:
+            print(f"Debut du tour {self.turn}")
             self.player_turn()
             if self.winner is not None or not self.p2.deck.is_alive():
                 self.winner = self.p1
@@ -123,26 +125,41 @@ class Fight:
                 xp_gain = 10 + (np.mean([i.lvl for i in looser.deck.decklist])) - i.lvl
                 i.gain_xp(xp_gain)
         else:
-            if self.winner == self.p1:
+            if self.winner == self.p1 and self.p2 is not None:
                 for i in self.winner.deck.decklist:
-                    xp_gain = (10 + self.p2.deck.decklist[0].lvl - i.lvl)/3
+                    xp_gain = (10 + self.p2.deck.decklist[0].lvl - i.lvl) / 3
                     i.gain_xp(xp_gain)
 
     def player_turn(self):
-        print(self.p1.deck.current_pokemon)
+        print(f"Pokemon actuel de {self.p1.name} \n{self.p1.deck.current_pokemon}\n")
+        print(f"Pokemon actuel de {self.p2.name} \n{self.p2.deck.current_pokemon}\n")
 
         def abilities_menu():
             abi = self.p1.deck.current_pokemon.abilities_menu()
             _choices = {str(i): i for i in abi}
-            res = multiple_choices(_choices, "Quelle compétence voulez vous utiliser ?")
+            res = multiple_choices(_choices, "Quelle compétence voulez vous utiliser ?", combat_menu)
             if isinstance(res, Attack):
                 ok = self.p1.deck.current_pokemon.attack(res, self.p2.deck.current_pokemon)
                 if not ok:
                     abilities_menu()
+                    return
             elif isinstance(res, Defence):
                 ok = self.p1.deck.current_pokemon.defend(res)
                 if not ok:
                     abilities_menu()
+                    return
+            else:
+                res()
+
+        def combat_menu():
+            choices = {"Change poke": self.p1.deck.change_pokemon,
+                       "Utiliser une compétance": abilities_menu,
+                       "Passer le tour": lambda: 1}
+            if self.f_type.lower() == "JCJ".lower():
+                choices["ff"] = self.p1.deck.kill_all
+            else:
+                choices["Capturer"] = self.capture_try
+            multiple_choices_no_back(choices)()
 
         if self.p1.deck.current_pokemon.hp <= 0:
             self.p1.deck.change_pokemon()
@@ -150,24 +167,37 @@ class Fight:
                 # if no pokemon left, p2 is the winner
                 self.winner = self.p2
                 return
-        choices = {"Change poke": self.p1.deck.change_pokemon,
-                   "Utiliser une compétance": abilities_menu,
-                   "Passer le tour": lambda: 1}
-        if self.f_type.lower() == "JCJ".lower():
-            choices["ff"] = self.p1.deck.kill_all
-        else:
-            choices["Capturer"] = self.capture_try
-        multiple_choices_no_back(choices)()
-        print("Fin du tour")
+        combat_menu()
+
+        print(f"Fin du tour de {self.p1.name}\n")
 
     def capture_try(self):
+        print(f"Vous tentez de capturer {self.p2.name}")
+        sleep(1)
         ok = self.p1.capture(self.p2)
         if ok:
             print(f"Vous avez capturé le pokemon : {self.p2.name} !")
             self.winner = self.p1
+            self.p2 = None
+        else:
+            print(f"Vous n'avez pas réussi a capturer {self.p2.name}")
 
     def ia_turn(self):
-        pass
+        sleep(3)
+        a = self.p2.ia.choose_attack(
+            self.p2.deck.current_pokemon.abilities_menu() + [lambda: print(f"{self.p2.name} passe son tour")])
+        if isinstance(a, Attack):
+            ok = self.p2.deck.current_pokemon.attack(a, self.p1.deck.current_pokemon)
+            if not ok:
+                self.ia_turn()
+                return
+        elif isinstance(a, Defence):
+            ok = self.p2.deck.current_pokemon.defend(a)
+            if not ok:
+                self.ia_turn()
+                return
+        print(f"Fin du tour de {self.p2.name}\n")
+        sleep(1)
 
 
 if __name__ == "__main__":

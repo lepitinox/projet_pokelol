@@ -28,7 +28,7 @@ class Trainer:
             length of the Pokemon list
 
         """
-        self.poke_list = [Pokemon.generate_random_pokemon(0) for _ in range(list_size)]
+        self.poke_list = [Pokemon.generate_random_pokemon(1) for _ in range(list_size)]
 
 
 class Player(Trainer):
@@ -67,7 +67,33 @@ class Player(Trainer):
                 print(f"Not in deck : {pokemon}")
 
     def capture(self, p2):
+        """
+        Function to calculate whether a pokemon will be captured or not.
 
+        Parameters
+
+        ------------
+        poke_capt: The pokemon being captured
+
+        Return
+        -----------
+        Boolean: True or false whether the pokemon got captured or not
+        """
+        # V is current health of the pokemon
+        v = p2.deck.current_pokemon.hp
+        # Vmax is the maximum health of the pokemon
+        v_max = p2.deck.current_pokemon.max_hp
+        # The probability of capture
+        proba = 4 * (0.2 - v / v_max)
+
+        # Random number between 0 and 1
+        rand = random.random()
+
+        if rand <= proba:
+            self.poke_list.append(p2.deck.decklist[0])
+            return True
+        else:
+            return False
         return
 
 
